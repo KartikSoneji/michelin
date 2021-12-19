@@ -15,7 +15,7 @@ async function main() {
     return "instructions for step";
   });
 
-  app.setExternal("getIngredients", async () => {async()
+  app.setExternal("getIngredients", async () => {
     return "all ingredients";
   });
 

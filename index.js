@@ -1,5 +1,7 @@
-const dasha = require("@dasha.ai/sdk");
+// const dasha = require("@dasha.ai/sdk");
 const fs = require("fs");
+const https = require("https");
+const cheerio = require("cheerio");
 
 async function main() {
   const app = await dasha.deploy("./app");
@@ -11,12 +13,18 @@ async function main() {
       ? dasha.chat.connect(await dasha.chat.createConsoleChat())
       : dasha.sip.connect(new dasha.sip.Endpoint("default"));
 
-  app.setExternal("getInstructionsForStep", async (stepIndex) => {
-    return "instructions for step";
+  const recipe = await getRecipieData("https://www.allrecipes.com/recipe/246553/bakery-style-pizza/");
+
+  app.setExternal("getInstructionsForStep", async ({ stepIndex }) => {
+    return recipe.steps[stepIndex] ?? `Sorry, invalid step ${stepIndex}`;
+  });
+
+  app.setExternal("getStepCount", async () => {
+    return recipe.steps.length;
   });
 
   app.setExternal("getIngredients", async () => {
-    return "all ingredients";
+    return recipe.ingredients.join("\n");
   });
 
   await app.start();
@@ -49,3 +57,51 @@ async function main() {
 }
 
 main();
+
+async function getRecipieData(url){
+    const html = await fetch(url).then(e => e.text());
+    const $ = cheerio.load(html);
+
+    let ingredients = $("span.ingredients-item-name")
+        .map(function (i, el) {
+            return $(this).text();
+        })
+        .toArray();
+    let steps = $("div.paragraph")
+        .map(function (i, el) {
+            return $(this).text();
+        })
+        .toArray();
+    return {
+        ingredients, steps
+    };
+}
+
+async function fetch(url, options = {}){
+	return new Promise((resolve, reject) => {
+		let req = https.request(url, options, res => {
+			let data = [];
+			res.on("data", d => data.push(d));
+			res.on("end", e => {
+				let rawData = Buffer.concat(data).toString();
+				resolve({
+					headers: res.headers,
+					status: res.statusCode,
+					url,
+					text: async () => rawData,
+					json: async () => JSON.parse(rawData)
+				})
+			});
+		});
+
+		req.on("error", reject);
+
+		let body = options.body;
+		if(typeof body != "string")
+			body = JSON.stringify(body);
+		if(body && options.method != "GET" && options.method != "HEAD")
+			req.write(body);
+
+		req.end();
+	});
+}

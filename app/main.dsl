@@ -3,14 +3,17 @@ context
     input phone: string;
     stepIndex: number = 0;
     oldIndex: number = -1;
+    totalSteps: number = 0;
 }
 
-external function getInstructionsForStep(stepNumber: number): string;
 external function getIngredients(): string;
+external function getStepCount(): number;
+external function getInstructionsForStep(stepNumber: number): string;
 
 start node root {
     do {
         #connectSafe($phone);
+        $totalSteps = external getStepCount();
         goto next;
     }
     transitions {
@@ -42,7 +45,12 @@ digression next{
     }
     do{
         if($oldIndex == -1){
-            set $stepIndex += 1;
+            if($stepIndex < $totalSteps){
+                set $stepIndex += 1;
+            }
+            else{
+                goto hangup;
+            }
         }
         else{
             set $stepIndex = $oldIndex;
@@ -95,10 +103,8 @@ digression hangup
     }
     do
     {
+        #sayText("Thank you for cooking with Michelin. We hope you enjoy your meal.");
         #disconnect();
         exit;
-    }
-    transitions
-    {
     }
 }

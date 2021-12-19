@@ -1,4 +1,4 @@
-// const dasha = require("@dasha.ai/sdk");
+const dasha = require("@dasha.ai/sdk");
 const fs = require("fs");
 const https = require("https");
 const cheerio = require("cheerio");

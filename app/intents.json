@@ -1,39 +1,36 @@
 {
   "includes": {
-    "start_cleaning": [
-      "start cleaning",
-      "it's dirty",
-      "dirty here",
-      "clean my room",
-      "clean the place",
-      "clean the place please",
-      "I want this place clean"
+    "repeat_step": [
+      "sorry",
+      "can you come again",
+      "can you repeat that",
+      "what",
+      "i missed that"
     ],
-    "stop_cleaning": [
-      "stop",
-      "enough",
-      "stop cleaning",
-      "it's clean",
-      "it's clean already",
-      "I'll stop please"
+    "goto_step": [
+      "skip to",
+      "skip to step",
+      "go to",
+      "go to step",
+	  "read step",
+	  "start from step",
+	  "repeat step"
     ],
-    "battery_level": [
-      "battery level",
-      "how much battery left",
-      "do you have enough battery",
-      "do you need charging",
-      "need any charging"
+    "next_step": [
+      "next",
+      "ok",
+      "done",
+      "after that",
+	  "got it"
+    ],
+    "read_ingredients": [
+      "ingredients",
+      "how much",
+      "how many",
+      "number of",
+      "quantity of",
+      "weight of"
     ]
   },
-  "excludes": {
-    "start_cleaning": [
-      "okay I think it's going enough",
-      "I think it's a cake",
-      "I'll stop please",
-      "in New York"
-    ],
-    "stop_cleaning": [
-      "planet"
-    ]
-  }
+  "excludes": {}
 }

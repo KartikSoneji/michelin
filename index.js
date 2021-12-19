@@ -24,23 +24,12 @@ async function main() {
       ? dasha.chat.connect(await dasha.chat.createConsoleChat())
       : dasha.sip.connect(new dasha.sip.Endpoint("default"));
 
-  app.setExternal("startCleaner", async () => {
-    console.log("Starting cleaning...");
-    await device.init();
-    device.setClean();
-    return "";
+  app.setExternal("getInstructionsForStep", async (stepIndex) => {
+    return "instructions for step";
   });
 
-  app.setExternal("stopCleaner", async () => {
-    console.log("Returning to dock...");
-    await device.init();
-    device.setCharge();
-    return "";
-  });
-
-  app.setExternal("getBattery", async () => {
-    await device.init();
-    return device.getBattery();
+  app.setExternal("getIngredients", async () => {async()
+    return "all ingredumts";
   });
 
   await app.start();

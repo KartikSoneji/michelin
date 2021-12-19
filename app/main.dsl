@@ -1,54 +1,92 @@
 context
 {
     input phone: string;
+    stepIndex: number = 0;
+    oldIndex: number = -1;
 }
 
-external function startCleaner():boolean;
-external function stopCleaner():boolean;
-external function getBattery():number;
+external function getInstructionsForStep(stepNumber: number): string;
+external function getIngredients(): string;
 
-start node root
-{
-    do
-    {
+start node root {
+    do {
         #connectSafe($phone);
-        wait *;
+        goto next;
+    }
+    transitions {
+        next: goto read_ingredients;
     }
 }
 
-digression start_cleaning
-{
-    conditions { on #messageHasIntent("start_cleaning"); }
-    do
-    {
-        #sayText("Indeed. This place needs some cleaning.");
-        external startCleaner();
-        return;
+digression read_ingredients{
+    conditions{
+        on #messageHasIntent("read_ingredients");
     }
-}
-digression stop_cleaning
-{
-    conditions { on #messageHasIntent("stop_cleaning"); }
-    do
-    {
-        #sayText("Well, as you wish, but it's still dirty here.");
-        external stopCleaner();
-        return;
+    do{
+        var ingredients = external getIngredients();
+        #sayText(ingredients);
+        goto home;
+    }
+    transitions{
+        home: goto home;
     }
 }
 
-digression get_battery
-{
-    conditions { on #messageHasIntent("battery_level"); }
-    do
-    {
-        var bl = external getBattery();
-        #say("battery_level",
-        {
-            level: bl
+node home{
+    do{
+        var instructions = external getInstructionsForStep($stepIndex);
+        #sayText(instructions);
+    }
+}
+
+digression next{
+    conditions{
+        on #messageHasIntent("next_step");
+    }
+    do{
+        if(oldIndex == -1){
+            set $stepIndex += 1;
         }
-        );
-        return;
+        else{
+            set $stepIndex = $oldIndex;
+        }
+        goto home;
+    }
+    transitions{
+        home: goto home;
+    }
+}
+
+digression repeat{
+    conditions{
+        on #messageHasIntent("repeat_step");
+    }
+    do{
+        goto home;
+    }
+    transitions{
+        home: goto home;
+    }
+}
+
+digression goto_step{
+    conditions{
+        on #messageHasIntent("goto_step");
+    }
+    do{
+        var newIndex = #messageGetData("numberword")[0]?.value;
+        if(newIndex){
+            set $oldIndex = $stepIndex;
+            set $stepIndex = newIndex;
+        }
+        else{
+            #sayText("Sorry, I didn't get that, can you please try again?");
+            set $stepIndex =-1;
+        }
+        goto home;
+    }
+    transitions{
+        home: goto home;
     }
 }
 

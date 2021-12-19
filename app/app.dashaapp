@@ -19,5 +19,5 @@
     "file": "phrasemap.json",
     "signatureFile": "phrasemap.json"
   },
-  "name": "miio-vacuum-cleaner"
+  "name": "recipe-navigation"
 }

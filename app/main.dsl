@@ -1,40 +1,60 @@
 context
 {
     input phone: string;
-    stepIndex: number = 0;
+
+    currentList: string = "ingredients";
+
+    listLength: number = 0;
+    currentIndex: number = 0;
     oldIndex: number = -1;
-    totalSteps: number = 0;
 }
 
-external function getIngredients(): string;
-external function getStepCount(): number;
-external function getInstructionsForStep(stepNumber: number): string;
+external function getListLength(list: string): number;
+external function getListItem(list: string, index: number): string;
 
 start node root {
     do {
         #connectSafe($phone);
-        $totalSteps = external getStepCount();
+
+        #sayText("Hi, thank you for choosing to cook with Michelin.");
+        #sayText("What would you like to cook today?");
+
+        #waitForSpeech(5000);
+
         goto next;
     }
     transitions {
-        next: goto read_ingredients;
+        next: goto start_ingredients;
     }
 }
 
-node read_ingredients{
+node start_ingredients{
     do{
-        var ingredients = external getIngredients();
-        #sayText(ingredients);
-        goto home;
+        set $currentList = "ingredients";
+        #sayText("Here are the ingredients:");
+
+        goto set_list;
     }
     transitions{
-        home: goto home;
+        set_list: goto set_list;
     }
 }
 
-node home{
+node set_list{
     do{
-        var instructions = external getInstructionsForStep($stepIndex);
+        set $listLength = external getListLength($currentList);
+        set $currentIndex = 0;
+        set $oldIndex = -1;
+        goto read_item;
+    }
+    transitions{
+        read_item: goto read_item;
+    }
+}
+
+node read_item{
+    do{
+        var instructions = external getListItem($currentList, $currentIndex);
         #sayText(instructions);
     }
 }
@@ -45,20 +65,27 @@ digression next{
     }
     do{
         if($oldIndex == -1){
-            if($stepIndex < $totalSteps){
-                set $stepIndex += 1;
+            if($currentIndex < $listLength){
+                set $currentIndex += 1;
             }
             else{
+                if($currentList == "ingredients"){
+                    #sayText("Here are the steps:");
+                }
+                else if($currentList == "steps"){
+                    #sayText("And that's it! Your dish is ready.");
+                }
                 goto hangup;
             }
         }
         else{
-            set $stepIndex = $oldIndex;
+            set $currentIndex = $oldIndex;
         }
-        goto home;
+        goto read_item;
     }
     transitions{
-        home: goto home;
+        read_item: goto read_item;
+        hangup: goto hangup;
     }
 }
 
@@ -67,10 +94,10 @@ digression repeat{
         on #messageHasIntent("repeat_step");
     }
     do{
-        goto home;
+        goto read_item;
     }
     transitions{
-        home: goto home;
+        read_item: goto read_item;
     }
 }
 
@@ -81,26 +108,21 @@ digression goto_step{
     do{
         var newIndex = #messageGetData("numberword")[0]?.value;
         if(newIndex is not null){
-            set $oldIndex = $stepIndex;
-            set $stepIndex = #parseInt(newIndex);
+            set $oldIndex = $currentIndex;
+            set $currentIndex = #parseInt(newIndex);
         }
         else{
             #sayText("Sorry, I didn't get that, can you please try again?");
-            set $stepIndex =-1;
+            set $currentIndex =-1;
         }
-        goto home;
+        goto read_item;
     }
     transitions{
-        home: goto home;
+        read_item: goto read_item;
     }
 }
 
-digression hangup
-{
-    conditions
-    {
-        on true tags: onclosed;
-    }
+node hangup{
     do
     {
         #sayText("Thank you for cooking with Michelin. We hope you enjoy your meal.");

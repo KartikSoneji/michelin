@@ -15,16 +15,12 @@ async function main() {
 
   const recipe = await getRecipieData("https://www.allrecipes.com/recipe/246553/bakery-style-pizza/");
 
-  app.setExternal("getInstructionsForStep", async ({ stepIndex }) => {
-    return recipe.steps[stepIndex] ?? `Sorry, invalid step ${stepIndex}`;
+  app.setExternal("getListLength", async ({ list }) => {
+    return recipe[list].length;
   });
 
-  app.setExternal("getStepCount", async () => {
-    return recipe.steps.length;
-  });
-
-  app.setExternal("getIngredients", async () => {
-    return recipe.ingredients.join("\n");
+  app.setExternal("getListItem", async ({ list, index }) => {
+    return recipe[list][index] ?? `Sorry, invalid ${list} id ${index}`;
   });
 
   await app.start();

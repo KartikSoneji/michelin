@@ -5,16 +5,8 @@
       "speaker": "default",
       "speed": 1
     },
-    "phrases": {
-      "battery_level": [
-        { "text": "Battery level is " },
-        { "id": "level", "type": "dynamic" },
-        { "text": " percent." }
-      ]
-    },
+    "phrases": {},
     "types": {},
-    "macros": {
-      "battery_level": {}
-    }
+    "macros": {}
   }
 }

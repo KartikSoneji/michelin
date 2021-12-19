@@ -1,13 +1,12 @@
 {
-  "name": "miio-vacuum-cleaner",
+  "name": "michelin",
   "version": "1.0.0",
   "scripts": {
     "start": "node -r dotenv/config index.js"
   },
   "dependencies": {
     "@dasha.ai/sdk": "^0.6.5",
-    "dotenv": "^10.0.0",
-    "node-mihome": "0.0.32"
+    "dotenv": "^10.0.0"
   },
   "devDependencies": {
     "prettier": "^2.3.0"

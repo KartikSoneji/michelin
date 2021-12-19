@@ -18,10 +18,7 @@ start node root {
     }
 }
 
-digression read_ingredients{
-    conditions{
-        on #messageHasIntent("read_ingredients");
-    }
+node read_ingredients{
     do{
         var ingredients = external getIngredients();
         #sayText(ingredients);
@@ -44,7 +41,7 @@ digression next{
         on #messageHasIntent("next_step");
     }
     do{
-        if(oldIndex == -1){
+        if($oldIndex == -1){
             set $stepIndex += 1;
         }
         else{
@@ -75,9 +72,9 @@ digression goto_step{
     }
     do{
         var newIndex = #messageGetData("numberword")[0]?.value;
-        if(newIndex){
+        if(newIndex is not null){
             set $oldIndex = $stepIndex;
-            set $stepIndex = newIndex;
+            set $stepIndex = #parseInt(newIndex);
         }
         else{
             #sayText("Sorry, I didn't get that, can you please try again?");

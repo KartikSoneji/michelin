@@ -1,0 +1,28 @@
+{
+    "version": "v2",
+    "intents": {
+        "repeat_step": {
+            "includes": [
+                "sorry",
+                "can you come again",
+                "can you repeat that",
+                "what",
+                "i missed that"
+            ]
+        },
+        "goto_step": {
+            "includes": [
+                "skip to",
+                "skip to step",
+                "go to",
+                "go to step",
+                "read step",
+                "start from step",
+                "repeat step"
+            ]
+        },
+        "next_step": {
+            "includes": ["next", "ok", "done", "after that", "got it"]
+        }
+    }
+}

@@ -1,18 +1,5 @@
 const dasha = require("@dasha.ai/sdk");
-const mihome = require("node-mihome");
 const fs = require("fs");
-
-// local miIO
-mihome.miioProtocol.init();
-mihome.miCloudProtocol.login(process.env.MI_USERNAME, process.env.MI_PASSWORD);
-
-const device = mihome.device({
-  id: process.env.DEVICE_ID, // required, device id
-  model: process.env.MI_MODEL, // required, device model
-  address: process.env.DEVICE_IP, // miio-device option, local ip address
-  token: process.env.DEVICE_TOKEN, // miio-device option, device token
-  refresh: 30000, // miio-device option, device properties refresh interval in ms
-});
 
 async function main() {
   const app = await dasha.deploy("./app");
@@ -29,7 +16,7 @@ async function main() {
   });
 
   app.setExternal("getIngredients", async () => {async()
-    return "all ingredumts";
+    return "all ingredients";
   });
 
   await app.start();

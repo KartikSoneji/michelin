@@ -22,7 +22,19 @@
             ]
         },
         "next_step": {
-            "includes": ["next", "ok", "done", "after that", "got it"]
+            "includes": ["go to the next step", "ok", "done", "after that", "got it"]
+        },
+        "pizza": {
+            "includes": ["pizza", "I would like to eat pizza", "I want to eat pizza", "I want to cook pizza", "I would like to cook pizza"]
+        },
+        "previous_step": {
+            "includes": ["previous", "go back one step", "what was the step before that?", "go to the previous step"]
+        },
+        "last_step": {
+            "includes": ["last step", "go to the last step", "go to the final step", "what was the last step", "what was the final step"]
+        },
+        "first_step": {
+            "includes": ["first step", "go to the first step", "what was the first step"]
         }
     }
 }

@@ -25,7 +25,7 @@ async function main() {
 
   await app.start();
 
-  const conv = app.createConversation({ phone: process.argv[2] ?? "chat" });
+  const conv = app.createConversation({ phone: process.argv[2] ?? "chat", item: "pizza" });
 
   if (conv.input.phone !== "chat") conv.on("transcription", console.log);
 
